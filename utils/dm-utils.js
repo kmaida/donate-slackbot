@@ -1,15 +1,17 @@
+const utils = require('./utils');
+
 /*------------------
       DM UTILS
 ------------------*/
 
-const utils = {
+const dmUtils = {
   /*---
     Parse bot DM event payload
     @Param: event (event object)
     @Return: parsed donation payload
   ---*/
   async parseBotDM(event, app) {
-    const getName = await utils.getUserName(event.user, app);
+    const getName = await dmUtils.getUserName(event.user, app);
     const regex = /^([a-zA-Z0-9\-\s]+) \$([0-9.,]+?) (.*)$/g;
     const prepText = event.text.trim() + ' '; // Add a space to match regex
 
@@ -17,13 +19,15 @@ const utils = {
     const canParse = new RegExp(regex).test(prepText);
     if (canParse && event.files && event.files.length) {
       const textArray = [...prepText.matchAll(new RegExp(regex))][0];
+      const receipt = await dmUtils.getAttachments(event.files, app);
+      // Create data payload for Airtable
       const payload = {
         name: getName,
-        date: utils.parseSlackTs(event.ts),
+        date: dmUtils.parseSlackTs(event.ts),
         organization: textArray[1],
         amount: textArray[2],
         notes: textArray[3],
-        receipt: event.files ? utils.getAttachments(event.files) : undefined,
+        receipt: receipt,
         slackID: event.user
       };
       return payload;
@@ -38,12 +42,14 @@ const utils = {
     @Param: array of file objects
     @Return: array of Airtable-friendly attachments
   ---*/
-  getAttachments(fileArray) {
-    const attachments = [];
-    // https://airtable.com/appr4NMteSocmLLLR/api/docs#javascript/table:donations:create
-    fileArray.forEach((fileObj) => {
-      urlArr.push({ url: fileObj.url_private });
-    });
+  async getAttachments(fileArray, app) {
+    let attachments = [];
+    await utils.asyncForEach(fileArray, async (item) => {
+      const makeFilePublic = await app.client.files.sharedPublicURL({ token: process.env.SLACK_OAUTH_TOKEN, file: item.id });
+      const permalink = makeFilePublic.file.permalink_public;
+      const attachmentItem = { url: permalink };
+      attachments.push(attachmentItem);
+    })
     return attachments;
   },
   /*---
@@ -75,4 +81,4 @@ const utils = {
   }
 };
 
-module.exports = utils;
+module.exports = dmUtils;

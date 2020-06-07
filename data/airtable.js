@@ -21,7 +21,7 @@ const at = {
       {
         "fields": {
           "Name": data.name,
-          "Date": data.date,
+          "Submission Date": data.date,
           "Organization": data.organization,
           "Amount": data.amount,
           "Receipt": data.receipt,
@@ -39,8 +39,8 @@ const at = {
         id: savedID,
         link: `https://airtable.com/${tableID}/${viewID}/${savedID}`
       };
-      console.log('Saved new donation:', savedObj);
-      // Update home view
+      console.log('Saved new donation:', saved, savedObj);
+      // Update home view (?)
       // Send Slack message
       return savedObj;
     });

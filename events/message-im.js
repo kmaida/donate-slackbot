@@ -1,17 +1,19 @@
-const utils = require('./../utils/dm-utils');
+const dmUtils = require('./../utils/dm-utils');
 
 /*------------------
        BOT DM
 ------------------*/
 
-const botDM = (app) => {
+const botDM = (app, at) => {
   app.event('message', async ({ event, context }) => {
     // Parse the message
-    const parsedMsg = await utils.parseBotDM(event, app);
+    const parsedMsg = await dmUtils.parseBotDM(event, app);
 
     // If message is parsed properly
     if (parsedMsg) {
       // @TODO: save to Airtable (in Airtable success callback, send confirmation message to user)
+      console.log(parsedMsg);
+      // at.saveDonation(app, parsedMsg);
     }
     // Message couldn't be parsed OR data was missing
     else {

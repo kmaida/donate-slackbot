@@ -25,7 +25,7 @@ require('./events/app-mention')(app);
 /*------------------
        BOT DM
 ------------------*/
-require('./events/message-im')(app);
+require('./events/message-im')(app, at);
 
 /*------------------
      START APP
