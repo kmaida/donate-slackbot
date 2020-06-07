@@ -8,9 +8,10 @@ const utils = {
     @Param: event (event object)
     @Return: parsed donation payload
   ---*/
-  parseBotDM(event) {
+  async parseBotDM(event, app) {
+    const name = await utils.getUserName(event.user, app);
     const payload = {
-      name: undefined,
+      name: name,
       date: utils.parseSlackTs(event.ts),
       organization: undefined,
       amount: undefined,
@@ -18,6 +19,7 @@ const utils = {
       receipt: utils.getAttachments(event.files),
       slackID: event.user
     };
+    return payload;
   },
   /*---
     Get file attachments for Airtable insertion
@@ -41,6 +43,23 @@ const utils = {
     const timestamp = timeStr.substring(0, timeStr.length-3).replace('.', '') * 1;
     const isoDate = new Date(timestamp).toISOString().split('T')[0];
     return isoDate;
+  },
+  /*---
+    Get Slack user's name from profile info
+    @Param: User ID
+    @Return: User's name
+  ---*/
+  async getUserName(userID, app) {
+    try {
+      const userInfo = await app.client.users.info({
+        token: process.env.SLACK_BOT_TOKEN,
+        user: userID
+      });
+      return userInfo.real_name_normalized;
+    }
+    catch (err) {
+      console.error(err);
+    }
   }
 };
 
