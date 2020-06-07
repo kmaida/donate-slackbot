@@ -1,4 +1,4 @@
-const utils = require('./../utils');
+const utils = require('./../utils/dm-utils');
 
 /*------------------
        BOT DM
@@ -6,20 +6,20 @@ const utils = require('./../utils');
 
 const botDM = (app) => {
   app.event('message', async ({ event, context }) => {
-    // console.log('message.im', event, utils.getUserName(event.user, app));
+    // Parse the message
     const parsedMsg = await utils.parseBotDM(event, app);
-    console.log(parsedMsg);
 
+    // If message is parsed properly
     if (parsedMsg) {
-
-    } 
-    // Message couldn't be parsed into a usable command
+      // @TODO: save to Airtable (in Airtable success callback, send confirmation message to user)
+    }
+    // Message couldn't be parsed OR data was missing
     else {
       try {
         const sendMsg = await app.client.chat.postMessage({
           token: context.botToken,
           channel: event.channel,
-          text: ":shrug: I'm sorry, I didn't understand that. Share your donation with me like this: ```[Name of organization] $[donation amount in USD] [any additional comments]```:paperclip: Make sure you also *attach a photo of your donation receipt*!"
+          text: ":shrug: I'm sorry, I didn't understand that. Please share your donation with me like this: ```[Name of organization] $[donation amount in USD] [any additional comments]```:paperclip: Make sure you also *attach a photo of your donation receipt*!"
         });
       }
       catch (err) {
