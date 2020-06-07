@@ -5,7 +5,7 @@
 const appMention = (app) => {
   app.event('app_mention', async ({ event, context }) => {
     try {
-      const result = await app.client.chat.postEphemeral({
+      const appMentionResponse = await app.client.chat.postEphemeral({
           token: context.botToken,
           channel: event.channel,
           user: event.user,

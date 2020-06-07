@@ -26,7 +26,7 @@ const at = {
           "Amount": data.amount,
           "Receipt": data.receipt,
           "Notes": data.notes,
-          "Slack ID": data.submitterID
+          "Slack ID": data.slackID
         }
       }
     ], (err, records) => {

@@ -13,10 +13,6 @@ const app = new App({
 const port = process.env.PORT || 3000;
 
 /*------------------
-    ON APP INIT
-------------------*/
-
-/*------------------
   APP HOME OPENED
 ------------------*/
 require('./events/app-home-opened')(app, at);
@@ -25,6 +21,10 @@ require('./events/app-home-opened')(app, at);
     APP MENTION
 ------------------*/
 require('./events/app-mention')(app);
+
+/*------------------
+       BOT DM
+------------------*/
 require('./events/message-im')(app);
 
 /*------------------

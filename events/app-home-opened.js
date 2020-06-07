@@ -8,7 +8,6 @@ const appHomeOpened = async (app, at) => {
   ----*/
   app.event('app_home_opened', async ({ event, context }) => {
     // Publish this user's home view
-    console.log('app_home_opened');
     try {
       const showHomeView = await app.client.views.publish({
         token: context.botToken,

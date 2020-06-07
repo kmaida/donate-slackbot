@@ -6,7 +6,9 @@ const utils = require('./../utils');
 
 const botDM = (app) => {
   app.event('message', async ({ event, context }) => {
-    console.log('message.im', event, utils.getUserName(event.user, app));
+    // console.log('message.im', event, utils.getUserName(event.user, app));
+    const donationObj = await utils.parseBotDM(event, app);
+    console.log(donationObj);
     try {
       // const sendMsg = await app.client.chat.postMessage({
       //   token: context.botToken,

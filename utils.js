@@ -9,16 +9,21 @@ const utils = {
     @Return: parsed donation payload
   ---*/
   async parseBotDM(event, app) {
-    const name = await utils.getUserName(event.user, app);
+    const getName = await utils.getUserName(event.user, app);
+    const textRegex = new RegExp(/^([a-zA-Z0-9\-\s]+) \$([0-9.,]+?) (.*)$/g);
+    const prepText = event.text.trim() + ' '; // Add a space to match regex
+    console.log(getName);
+    const textArray = [...prepText.matchAll(textRegex)][0];
     const payload = {
-      name: name,
+      name: getName,
       date: utils.parseSlackTs(event.ts),
-      organization: undefined,
-      amount: undefined,
-      notes: undefined,
-      receipt: utils.getAttachments(event.files),
+      organization: textArray[1],
+      amount: textArray[2],
+      notes: textArray[3],
+      receipt: event.files ? utils.getAttachments(event.files) : undefined,
       slackID: event.user
     };
+    console.log(textArray);
     return payload;
   },
   /*---
@@ -55,7 +60,7 @@ const utils = {
         token: process.env.SLACK_BOT_TOKEN,
         user: userID
       });
-      return userInfo.real_name_normalized;
+      return userInfo.user.profile.real_name_normalized;
     }
     catch (err) {
       console.error(err);

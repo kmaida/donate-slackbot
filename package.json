@@ -9,8 +9,7 @@
   "dependencies": {
     "@slack/bolt": "^2.1.1",
     "airtable": "^0.8.1",
-    "dotenv": "^8.2.0",
-    "fs": "0.0.1-security"
+    "dotenv": "^8.2.0"
   },
   "engines": {
     "node": "12.x"
