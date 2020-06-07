@@ -19,7 +19,7 @@ const dmUtils = {
     const canParse = new RegExp(regex).test(prepText);
     if (canParse && event.files && event.files.length) {
       const textArray = [...prepText.matchAll(new RegExp(regex))][0];
-      const receipt = await dmUtils.getAttachments(event.files, app);
+      const receipts = await dmUtils.getReceipts(event.files, app);
       // Create data payload for Airtable
       const payload = {
         name: getName,
@@ -27,7 +27,7 @@ const dmUtils = {
         organization: textArray[1],
         amount: textArray[2],
         notes: textArray[3],
-        receipt: receipt,
+        receipt: receipts,
         slackID: event.user
       };
       return payload;
@@ -38,19 +38,23 @@ const dmUtils = {
     }
   },
   /*---
-    Get file attachments for Airtable insertion
+    Get receipts for Airtable insertion
     @Param: array of file objects
-    @Return: array of Airtable-friendly attachments
+    @Param: Slack app
+    @Return: string of receipt URLs
   ---*/
-  async getAttachments(fileArray, app) {
+  async getReceipts(fileArray, app) {
     let attachments = [];
     await utils.asyncForEach(fileArray, async (item) => {
-      const makeFilePublic = await app.client.files.sharedPublicURL({ token: process.env.SLACK_OAUTH_TOKEN, file: item.id });
-      const permalink = makeFilePublic.file.permalink_public;
-      const attachmentItem = { url: permalink };
+      const getFile = await app.client.files.sharedPublicURL({
+        token: process.env.SLACK_OAUTH_TOKEN, 
+        file: item.id
+      });
+      const permalink = getFile.file.permalink_public;
+      const attachmentItem = permalink;
       attachments.push(attachmentItem);
-    })
-    return attachments;
+    });
+    return attachments.join(', ');
   },
   /*---
     Get file attachments for Airtable insertion

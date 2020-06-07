@@ -13,7 +13,7 @@ const botDM = (app, at) => {
     if (parsedMsg) {
       // @TODO: save to Airtable (in Airtable success callback, send confirmation message to user)
       console.log(parsedMsg);
-      // at.saveDonation(app, parsedMsg);
+      at.saveDonation(app, parsedMsg);
     }
     // Message couldn't be parsed OR data was missing
     else {
