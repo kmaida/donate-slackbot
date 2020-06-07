@@ -12,19 +12,33 @@ const utils = {
     const getName = await utils.getUserName(event.user, app);
     const textRegex = new RegExp(/^([a-zA-Z0-9\-\s]+) \$([0-9.,]+?) (.*)$/g);
     const prepText = event.text.trim() + ' '; // Add a space to match regex
-    console.log(getName);
-    const textArray = [...prepText.matchAll(textRegex)][0];
-    const payload = {
-      name: getName,
-      date: utils.parseSlackTs(event.ts),
-      organization: textArray[1],
-      amount: textArray[2],
-      notes: textArray[3],
-      receipt: event.files ? utils.getAttachments(event.files) : undefined,
-      slackID: event.user
-    };
-    console.log(textArray);
-    return payload;
+    const testRegex = textRegex.test(prepText);
+    // If command can be parsed
+    if (testRegex) {
+      const textArray = [...prepText.matchAll(textRegex)][0];
+      const payload = {
+        name: getName,
+        date: utils.parseSlackTs(event.ts),
+        organization: textArray[1],
+        amount: textArray[2],
+        notes: textArray[3],
+        receipt: event.files ? utils.getAttachments(event.files) : undefined,
+        slackID: event.user
+      };
+      return payload;
+    }
+    // Command cannot be parsed
+    else {
+      return false;
+    }
+  },
+  /*---
+    Verify parsed message for all data
+    @Param: parsedMsg (parsed message object)
+    @Return: show error message to user, OR data for Airtable
+  ---*/
+  async verifyParsedMsg(parsedMsg, app) {
+    
   },
   /*---
     Get file attachments for Airtable insertion

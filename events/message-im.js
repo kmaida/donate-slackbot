@@ -7,17 +7,24 @@ const utils = require('./../utils');
 const botDM = (app) => {
   app.event('message', async ({ event, context }) => {
     // console.log('message.im', event, utils.getUserName(event.user, app));
-    const donationObj = await utils.parseBotDM(event, app);
-    console.log(donationObj);
-    try {
-      // const sendMsg = await app.client.chat.postMessage({
-      //   token: context.botToken,
-      //   channel: event.channel,
-      //   text: `:thinking_face: I'm sorry, I don't understand. Go to my *<slack://app?team=${process.env.SLACK_TEAM_ID}&id=${process.env.SLACK_APP_ID}&tab=home|App Home tab>* to find out how I work!`
-      // });
-    }
-    catch (err) {
-      console.error(err);
+    const parsedMsg = await utils.parseBotDM(event, app);
+    console.log(parsedMsg);
+
+    if (parsedMsg) {
+
+    } 
+    // Message couldn't be parsed into a usable command
+    else {
+      try {
+        const sendMsg = await app.client.chat.postMessage({
+          token: context.botToken,
+          channel: event.channel,
+          text: ":shrug: I'm sorry, I didn't understand that. Share your donation with me like this: ```[Name of organization] $[donation amount in USD] [any additional comments]```:paperclip: Make sure you also *attach a photo of your donation receipt*!"
+        });
+      }
+      catch (err) {
+        console.error(err);
+      }
     }
   });
 };
