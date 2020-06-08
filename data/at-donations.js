@@ -4,7 +4,7 @@ const tableID = process.env.AIRTABLE_DONATIONS_ID;
 const viewID = process.env.AIRTABLE_DONATIONS_VIEW_ID;
 
 /*------------------
-      AIRTABLE
+AIRTABLE: DONATIONS
 ------------------*/
 
 const sendErr = (err) => {

@@ -1,7 +1,7 @@
 require('dotenv').config();
 const { App } = require('@slack/bolt');
 // Airtable
-const at = require('./data/airtable');
+const at = require('./data/at-donations');
 
 /*------------------
   CREATE BOLT APP
