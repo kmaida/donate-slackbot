@@ -4,7 +4,7 @@ const tableID = process.env.AIRTABLE_CAUSES_ID;
 const viewID = process.env.AIRTABLE_CAUSES_VIEW_ID;
 
 /*------------------
- AIRTABLE: CAUSES
+  AIRTABLE: CAUSES
 ------------------*/
 
 const sendErr = (err) => {
