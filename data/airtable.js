@@ -1,7 +1,7 @@
 const base = require('airtable').base(process.env.AIRTABLE_BASE_ID);
-const table = process.env.AIRTABLE_TABLE;
-const tableID = process.env.AIRTABLE_TABLE_ID;
-const viewID = process.env.AIRTABLE_VIEW_ID;
+const table = process.env.AIRTABLE_DONATIONS;
+const tableID = process.env.AIRTABLE_DONATIONS_ID;
+const viewID = process.env.AIRTABLE_DONATIONS_VIEW_ID;
 
 /*------------------
       AIRTABLE
