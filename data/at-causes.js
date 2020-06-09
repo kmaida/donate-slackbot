@@ -22,7 +22,7 @@ const atCauses = {
         "fields": {
           "Organization": data.organization,
           "URL": data.url,
-          "Description": data.description
+          "Description": data.description || ''
         }
       }
     ], (err, records) => {
@@ -36,8 +36,8 @@ const atCauses = {
         link: `https://airtable.com/${tableID}/${viewID}/${savedID}`
       };
       console.log('Saved new cause:', saved, savedObj);
-      // Update home view (?)
-      // Send Slack message
+      // Update home view (? pass app, bc, homeParams)
+      // Send Slack message (pass app, bc)
       return savedObj;
     });
   }
