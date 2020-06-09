@@ -8,24 +8,33 @@ const dmUtils = {
   /*---
     Parse bot DM event payload
     @Param: event (event object)
-    @Return: parsed donation payload
+    @Param: Slack app
+    @Return: parsed donation payload || boolean
   ---*/
   async parseBotDM(event, app) {
+    // Fetch user's name from their Slack ID
     const getName = await dmUtils.getUserName(event.user, app);
+    // E.g., "Act Blue $30 Thank you for matching my donation!"
     const regex = /^([a-zA-Z0-9\-\s]+) \$([0-9.,]+?) (.*)$/g;
-    const prepText = event.text.trim() + ' '; // Add a space to match regex
-
-    // If command can be parsed, verify the parsed message
+    // Add a space to match regex in case "notes" are missing
+    const prepText = event.text.trim() + ' ';
+    // If command matches regex, that means it can be parsed into an object
     const canParse = new RegExp(regex).test(prepText);
+
+    // If command is parseable and has file attachment, return payload
     if (canParse && event.files && event.files.length) {
+      // Use regex to get match groups from command text
       const textArray = [...prepText.matchAll(new RegExp(regex))][0];
+      // Coerce donation amount into a number
+      const donation = textArray[2].replace(',', '') * 1;
+      // Get string containing comma-separated links to uploaded receipt files
       const receipts = await dmUtils.getReceipts(event.files, app);
       // Create data payload for Airtable
       const payload = {
         name: getName,
         date: dmUtils.parseSlackTs(event.ts),
         organization: textArray[1],
-        amount: textArray[2],
+        donation: donation,
         notes: textArray[3],
         receipt: receipts,
         slackID: event.user
@@ -46,6 +55,7 @@ const dmUtils = {
   async getReceipts(fileArray, app) {
     let attachments = [];
     await utils.asyncForEach(fileArray, async (item) => {
+      // Make files public so they can be inserted into Airtable
       const getFile = await app.client.files.sharedPublicURL({
         token: process.env.SLACK_OAUTH_TOKEN, 
         file: item.id
@@ -57,9 +67,9 @@ const dmUtils = {
     return attachments.join(', ');
   },
   /*---
-    Get file attachments for Airtable insertion
+    Convert Slack timestamp into ISO date
     @Param: Slack string timestamp (e.g., '1591547570.002300')
-    @Return: ISO date
+    @Return: ISO date string (YYYY-MM-DD)
   ---*/
   parseSlackTs(timeStr) {
     const timestamp = timeStr.substring(0, timeStr.length-3).replace('.', '') * 1;
@@ -68,8 +78,8 @@ const dmUtils = {
   },
   /*---
     Get Slack user's name from profile info
-    @Param: User ID
-    @Return: User's name
+    @Param: user's Slack ID
+    @Return: user's normalized real name
   ---*/
   async getUserName(userID, app) {
     try {

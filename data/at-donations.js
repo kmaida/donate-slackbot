@@ -23,7 +23,7 @@ const at = {
           "Name": data.name,
           "Submission Date": data.date,
           "Organization": data.organization,
-          "Amount": data.amount,
+          "Donation": data.donation,
           "Receipt": data.receipt,
           "Notes": data.notes,
           "Slack ID": data.slackID
