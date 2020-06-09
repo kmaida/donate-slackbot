@@ -16,7 +16,7 @@ const atCauses = {
   /*----
     Save a new cause
   ----*/
-  async saveCause(app, data) {
+  async saveCause(app, bc, data, homeParams) {
     base(table).create([
       {
         "fields": {

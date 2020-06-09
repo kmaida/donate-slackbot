@@ -2,7 +2,7 @@
   APP HOME OPENED
 ------------------*/
 
-const appHomeOpened = async (app, at) => {
+const appHomeOpened = async (app, atCauses) => {
   /*----
     EVENT: app-home-opened
   ----*/
